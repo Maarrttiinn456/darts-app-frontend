@@ -107,3 +107,7 @@ Výhledy do budoucna: další metriky budou přibývat podle potřeby.
 - Drizzle schéma: snake_case názvy sloupců
 - React Router v7 — používej **declarative mode** (ne framework mode)
 - React Query — vždy invaliduj správné query keys po mutacích
+
+---
+
+## Rules
