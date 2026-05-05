@@ -1,7 +1,12 @@
-import { Button } from '@/components/ui/button';
+import { Routes, Route } from 'react-router';
+import LoginPage from '@/pages/auth/LoginPage';
 
 const App = () => {
-    return <Button>Přidat hru</Button>;
+    return (
+        <Routes>
+            <Route path="/" element={<LoginPage />} />
+        </Routes>
+    );
 };
 
 export default App;
