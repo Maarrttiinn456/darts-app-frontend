@@ -64,7 +64,6 @@ const LeaguesPage = () => {
     return (
         <main>
 
-            {/* Header */}
             <header className="sticky top-0 z-10 bg-background border-b border-border px-5 py-4 flex items-center justify-between gap-4">
                 <h1 className="text-2xl font-black uppercase tracking-widest text-foreground">
                     Ligy
@@ -77,9 +76,8 @@ const LeaguesPage = () => {
                 </Button>
             </header>
 
-            {/* League list */}
             <section>
-                <div className="flex flex-col divide-y divide-border">
+                <div className="flex flex-col -space-y-px">
                     {SAMPLE_LEAGUES.map((league) => (
                         <LeagueCard
                             key={league.id}

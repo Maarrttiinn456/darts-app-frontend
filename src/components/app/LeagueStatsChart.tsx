@@ -6,7 +6,6 @@ import {
     ResponsiveContainer,
     Tooltip,
 } from 'recharts';
-import SectionHeading from '@/components/app/SectionHeading';
 
 type Member = {
     id: string;
@@ -23,9 +22,8 @@ interface LeagueStatsChartProps {
 }
 
 const LeagueStatsChart = ({ data, members }: LeagueStatsChartProps) => (
-    <section className="border-t border-border">
-        <SectionHeading>Statistiky</SectionHeading>
-        <div className="px-2 pt-6 pb-4">
+    <section>
+        <div className="px-2 pt-6 pb-6">
             <ResponsiveContainer width="100%" height={220}>
                 <LineChart
                     data={data}
@@ -86,11 +84,11 @@ const LeagueStatsChart = ({ data, members }: LeagueStatsChartProps) => (
                 </LineChart>
             </ResponsiveContainer>
 
-            <div className="mt-5 px-3 flex flex-wrap gap-x-5 gap-y-2">
+            <div className="mt-6 px-3 flex flex-wrap gap-x-5 gap-y-2.5">
                 {members.map(m => (
                     <div key={m.id} className="flex items-center gap-2">
                         <span
-                            className="w-2 h-2 shrink-0"
+                            className="w-3 h-3 shrink-0"
                             style={{ backgroundColor: m.color }}
                         />
                         <span className="text-[10px] font-black uppercase tracking-[0.12em] text-muted-foreground">

@@ -1,5 +1,4 @@
 import { ChevronRight } from 'lucide-react';
-import SectionHeading from '@/components/app/SectionHeading';
 import { formatDate } from '@/lib/utils';
 
 export type TournamentSummary = {
@@ -25,8 +24,7 @@ const LeagueTournamentList = ({ tournaments, members, onTournamentClick }: Leagu
     const memberMap = Object.fromEntries(members.map(m => [m.id, m]));
 
     return (
-        <section className="border-t border-border">
-            <SectionHeading>Turnaje</SectionHeading>
+        <section>
             <div className="divide-y divide-border">
                 {tournaments.map(t => {
                     const winner = memberMap[t.winnerId];
