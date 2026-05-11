@@ -40,8 +40,9 @@ src/
 │   ├── ui/                # shadcn komponenty (negeneruj ručně, používej CLI)
 │   └── app/               # vlastní komponenty aplikace
 ├── hooks/                 # custom hooks + React Query hooks
+├── api/                   # fetch funkce per doména (auth, leagues, tournaments, games)
 ├── lib/
-│   ├── api.ts             # fetch wrapper, base URL, auth header
+│   ├── api.ts             # axios instance, base URL, auth header
 │   └── queryClient.ts     # React Query konfigurace
 └── types/
     └── api.ts             # generováno z backendu přes openapi-typescript
