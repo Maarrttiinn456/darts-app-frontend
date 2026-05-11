@@ -4,6 +4,7 @@ import RegisterPage from '@/pages/auth/RegisterPage';
 import LeaguesPage from '@/pages/leagues/LeaguesPage';
 import CreateLeaguePage from '@/pages/leagues/CreateLeaguePage';
 import LeagueDetailPage from '@/pages/leagues/LeagueDetailPage';
+import TournamentDetailPage from '@/pages/tournaments/TournamentDetailPage';
 import AppLayout from '@/components/app/AppLayout';
 
 const App = () => {
@@ -14,7 +15,14 @@ const App = () => {
             <Route element={<AppLayout />}>
                 <Route path="/leagues" element={<LeaguesPage />} />
                 <Route path="/leagues/new" element={<CreateLeaguePage />} />
-                <Route path="/leagues/:leagueId" element={<LeagueDetailPage />} />
+                <Route
+                    path="/leagues/:leagueId"
+                    element={<LeagueDetailPage />}
+                />
+                <Route
+                    path="/leagues/:leagueId/tournaments/:tournamentId"
+                    element={<TournamentDetailPage />}
+                />
             </Route>
         </Routes>
     );

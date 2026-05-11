@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { Button } from '@/components/ui/button';
+import CreateTournamentModal from '@/components/app/CreateTournamentModal';
 import LeagueStandings, { type StandingRow } from '@/components/app/LeagueStandings';
 import LeagueTournamentList, { type TournamentSummary } from '@/components/app/LeagueTournamentList';
 import LeagueStatsChart, { type ChartDataPoint } from '@/components/app/LeagueStatsChart';
@@ -48,6 +50,7 @@ const CHART_DATA: ChartDataPoint[] = [
 
 const LeagueDetailPage = () => {
     const navigate = useNavigate();
+    const [modalOpen, setModalOpen] = useState(false);
 
     return (
         <main>
@@ -64,11 +67,13 @@ const LeagueDetailPage = () => {
                 </h1>
                 <Button
                     className="h-10 text-xs font-black uppercase tracking-[0.2em]"
-                    onClick={() => navigate(`/leagues/${LEAGUE.id}/tournaments/new`)}
+                    onClick={() => setModalOpen(true)}
                 >
                     Přidat turnaj
                 </Button>
             </header>
+
+            <CreateTournamentModal open={modalOpen} onClose={() => setModalOpen(false)} />
 
             <LeagueStandings standings={STANDINGS} members={MEMBERS} />
 
