@@ -1,5 +1,6 @@
 import { ChevronRight } from 'lucide-react';
 import type { components } from '@/types/api';
+import { formatDate } from '@/lib/utils';
 
 type League = components['schemas']['League'];
 type LeagueMember = components['schemas']['LeagueMember'];
@@ -10,15 +11,6 @@ interface LeagueCardProps {
     league: LeagueWithMembers;
     onClick?: () => void;
 }
-
-const formatDate = (iso?: string) => {
-    if (!iso) return null;
-    return new Date(iso).toLocaleDateString('cs-CZ', {
-        day: 'numeric',
-        month: 'numeric',
-        year: 'numeric',
-    });
-};
 
 const LeagueCard = ({ league, onClick }: LeagueCardProps) => {
     const memberCount = league.members?.length ?? 0;

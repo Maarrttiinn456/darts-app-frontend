@@ -3,6 +3,7 @@ import LoginPage from '@/pages/auth/LoginPage';
 import RegisterPage from '@/pages/auth/RegisterPage';
 import LeaguesPage from '@/pages/leagues/LeaguesPage';
 import CreateLeaguePage from '@/pages/leagues/CreateLeaguePage';
+import LeagueDetailPage from '@/pages/leagues/LeagueDetailPage';
 import AppLayout from '@/components/app/AppLayout';
 
 const App = () => {
@@ -13,6 +14,7 @@ const App = () => {
             <Route element={<AppLayout />}>
                 <Route path="/leagues" element={<LeaguesPage />} />
                 <Route path="/leagues/new" element={<CreateLeaguePage />} />
+                <Route path="/leagues/:leagueId" element={<LeagueDetailPage />} />
             </Route>
         </Routes>
     );
