@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import PageHeader from '@/components/app/PageHeader';
 import NewGameModal from '@/components/app/NewGameModal';
+import SectionHeading from '@/components/app/SectionHeading';
 
 const TOURNAMENT = {
     id: 't1',
@@ -65,29 +66,19 @@ const TournamentDetailPage = () => {
 
     return (
         <main>
-            <header className="sticky top-0 z-10 bg-background border-b border-border px-5 py-4 flex items-center gap-3">
-                <button
-                    onClick={() => navigate(`/leagues/${leagueId}`)}
-                    className="-ml-1 p-1 shrink-0 text-muted-foreground hover:text-foreground transition-colors duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                    aria-label="Zpět na detail ligy"
-                >
-                    <ChevronLeft size={22} />
-                </button>
-                <div className="flex-1 min-w-0">
-                    <h1 className="text-xl font-black uppercase tracking-widest text-foreground truncate">
-                        {TOURNAMENT.name}
-                    </h1>
-                    <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                        {TOURNAMENT.date}
-                    </p>
-                </div>
-                <Button
-                    onClick={() => setNewGameOpen(true)}
-                    className="h-10 text-xs font-black uppercase tracking-[0.2em]"
-                >
-                    Nová hra
-                </Button>
-            </header>
+            <PageHeader
+                onBack={() => navigate(`/leagues/${leagueId}`)}
+                title={TOURNAMENT.name}
+                subtitle={TOURNAMENT.date}
+                action={
+                    <Button
+                        onClick={() => setNewGameOpen(true)}
+                        className="h-10 text-xs font-black uppercase tracking-[0.2em]"
+                    >
+                        Nová hra
+                    </Button>
+                }
+            />
 
             <NewGameModal
                 open={newGameOpen}
@@ -96,11 +87,9 @@ const TournamentDetailPage = () => {
                 tournamentId={tournamentId ?? ''}
             />
 
-            <section className="px-5 pt-6 pb-4">
-                <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground mb-3">
-                    Bodová tabulka
-                </p>
-                <div className="overflow-x-auto -mx-5 px-5">
+            <section>
+                <SectionHeading>Bodová tabulka</SectionHeading>
+                <div className="px-5 pt-5 pb-4 overflow-x-auto -mx-0">
                     <table className="w-full min-w-[360px] border-collapse">
                         <thead>
                             <tr className="border-b border-border">
@@ -160,24 +149,22 @@ const TournamentDetailPage = () => {
                 </div>
             </section>
 
-            <section className="px-5 pt-2 pb-10">
-                <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground mb-3">
-                    Odehrané hry
-                </p>
-                <div className="flex flex-col gap-3">
+            <section>
+                <SectionHeading>Odehrané hry</SectionHeading>
+                <div className="divide-y divide-border">
                     {GAMES.map((game, gameIdx) => {
                         const sorted = [...game.scores].sort((a, b) => b.points - a.points);
                         return (
-                            <div key={game.id} className="bg-card border border-border p-4">
-                                <div className="flex items-baseline justify-between mb-3">
-                                    <span className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                            <div key={game.id} className="px-5 py-5">
+                                <div className="mb-4">
+                                    <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground mb-1">
                                         Hra {gameIdx + 1}
-                                    </span>
-                                    <span className="text-xs font-black uppercase tracking-[0.2em] text-foreground">
+                                    </p>
+                                    <p className="text-xl font-black uppercase tracking-wider text-foreground">
                                         {game.mode}
-                                    </span>
+                                    </p>
                                 </div>
-                                <div className="flex flex-col gap-2">
+                                <div className="flex flex-col gap-2.5">
                                     {sorted.map((score, pos) => {
                                         const player = PLAYERS.find(p => p.id === score.userId)!;
                                         const isWinner = pos === 0;
@@ -186,7 +173,7 @@ const TournamentDetailPage = () => {
                                                 <span className={`text-xs font-black tabular-nums w-4 shrink-0 ${isWinner ? 'text-primary' : 'text-muted-foreground'}`}>
                                                     {pos + 1}.
                                                 </span>
-                                                <span className={`flex-1 text-sm font-bold ${isWinner ? 'text-primary' : 'text-foreground'}`}>
+                                                <span className={`flex-1 text-sm font-bold ${isWinner ? 'text-foreground' : 'text-foreground/70'}`}>
                                                     {player.name}
                                                 </span>
                                                 <span className={`text-sm tabular-nums font-black ${isWinner ? 'text-primary' : 'text-muted-foreground'}`}>
@@ -201,6 +188,8 @@ const TournamentDetailPage = () => {
                     })}
                 </div>
             </section>
+
+            <div className="h-10" />
         </main>
     );
 };

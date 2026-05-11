@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { ChevronLeft } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { Button } from '@/components/ui/button';
+import PageHeader from '@/components/app/PageHeader';
 import CreateTournamentModal from '@/components/app/CreateTournamentModal';
 import LeagueStandings, { type StandingRow } from '@/components/app/LeagueStandings';
 import LeagueTournamentList, { type TournamentSummary } from '@/components/app/LeagueTournamentList';
@@ -48,44 +48,69 @@ const CHART_DATA: ChartDataPoint[] = [
     { tournament: 'Zimní',    u1: 2840, u2: 2390, u3: 2610, u4: 1540, u5: 2100, u6: 1870 },
 ];
 
+type Tab = 'tabulka' | 'turnaje' | 'statistiky';
+
+const TABS: { id: Tab; label: string }[] = [
+    { id: 'tabulka', label: 'Tabulka' },
+    { id: 'turnaje', label: 'Turnaje' },
+    { id: 'statistiky', label: 'Statistiky' },
+];
+
 const LeagueDetailPage = () => {
     const navigate = useNavigate();
     const [modalOpen, setModalOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState<Tab>('tabulka');
 
     return (
         <main>
-            <header className="sticky top-0 z-10 bg-background border-b border-border px-5 py-4 flex items-center gap-3">
-                <button
-                    onClick={() => navigate('/leagues')}
-                    className="-ml-1 p-1 shrink-0 text-muted-foreground hover:text-foreground transition-colors duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                    aria-label="Zpět na seznam lig"
-                >
-                    <ChevronLeft size={22} />
-                </button>
-                <h1 className="flex-1 text-xl font-black uppercase tracking-widest text-foreground truncate">
-                    {LEAGUE.name}
-                </h1>
-                <Button
-                    className="h-10 text-xs font-black uppercase tracking-[0.2em]"
-                    onClick={() => setModalOpen(true)}
-                >
-                    Přidat turnaj
-                </Button>
-            </header>
+            <div className="sticky top-0 z-10">
+                <PageHeader
+                    onBack={() => navigate('/leagues')}
+                    title={LEAGUE.name}
+                    action={
+                        <Button
+                            className="h-10 text-xs font-black uppercase tracking-[0.2em]"
+                            onClick={() => setModalOpen(true)}
+                        >
+                            Přidat turnaj
+                        </Button>
+                    }
+                />
+
+                <nav className="bg-background flex" aria-label="Sekce ligy">
+                    {TABS.map(tab => (
+                        <button
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id)}
+                            aria-selected={activeTab === tab.id}
+                            role="tab"
+                            className={`flex-1 py-3 text-xs font-black uppercase tracking-[0.16em] border-b-2 transition-colors duration-0 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-inset ${
+                                activeTab === tab.id
+                                    ? 'text-foreground border-primary'
+                                    : 'text-muted-foreground border-border hover:text-foreground/70'
+                            }`}
+                        >
+                            {tab.label}
+                        </button>
+                    ))}
+                </nav>
+            </div>
 
             <CreateTournamentModal open={modalOpen} onClose={() => setModalOpen(false)} />
 
-            <LeagueStandings standings={STANDINGS} members={MEMBERS} />
-
-            <LeagueTournamentList
-                tournaments={TOURNAMENTS}
-                members={MEMBERS}
-                onTournamentClick={id => navigate(`/leagues/${LEAGUE.id}/tournaments/${id}`)}
-            />
-
-            <LeagueStatsChart data={CHART_DATA} members={MEMBERS} />
-
-            <div className="h-8" />
+            {activeTab === 'tabulka' && (
+                <LeagueStandings standings={STANDINGS} members={MEMBERS} />
+            )}
+            {activeTab === 'turnaje' && (
+                <LeagueTournamentList
+                    tournaments={TOURNAMENTS}
+                    members={MEMBERS}
+                    onTournamentClick={id => navigate(`/leagues/${LEAGUE.id}/tournaments/${id}`)}
+                />
+            )}
+            {activeTab === 'statistiky' && (
+                <LeagueStatsChart data={CHART_DATA} members={MEMBERS} />
+            )}
         </main>
     );
 };

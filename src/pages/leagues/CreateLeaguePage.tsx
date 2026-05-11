@@ -41,12 +41,11 @@ const CreateLeaguePage = () => {
     return (
         <main className="flex flex-col min-h-screen">
 
-            {/* Header */}
             <header className="sticky top-0 z-10 bg-background border-b border-border px-5 py-4 flex items-center gap-4">
                 <button
                     onClick={() => navigate('/leagues')}
                     aria-label="Zpět na ligy"
-                    className="flex items-center justify-center w-8 h-8 -ml-1 text-muted-foreground hover:text-foreground transition-colors duration-150"
+                    className="flex items-center justify-center w-11 h-11 -ml-2.5 shrink-0 text-muted-foreground hover:text-foreground transition-colors duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 >
                     <ArrowLeft size={20} strokeWidth={2} />
                 </button>
@@ -55,10 +54,8 @@ const CreateLeaguePage = () => {
                 </h1>
             </header>
 
-            {/* Content */}
             <div className="flex-1 flex flex-col gap-8 px-5 py-6 pb-28">
 
-                {/* League name */}
                 <div className="flex flex-col gap-2">
                     <Label
                         htmlFor="league-name"
@@ -75,7 +72,6 @@ const CreateLeaguePage = () => {
                     />
                 </div>
 
-                {/* Player selection */}
                 <div className="flex flex-col gap-2">
                     <div className="flex items-baseline justify-between">
                         <Label className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
@@ -102,7 +98,7 @@ const CreateLeaguePage = () => {
                                     ].join(' ')}
                                 >
                                     <span
-                                        className="shrink-0 w-4 h-4 rounded-full"
+                                        className="shrink-0 w-3 h-3"
                                         style={{ backgroundColor: player.color ?? undefined }}
                                         aria-hidden="true"
                                     />
@@ -125,7 +121,6 @@ const CreateLeaguePage = () => {
 
             </div>
 
-            {/* Footer */}
             <footer className="fixed bottom-0 inset-x-0 z-10 bg-background border-t border-border px-5 py-4">
                 <div className="max-w-sm mx-auto">
                     <Button
