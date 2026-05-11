@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import NewGameModal from '@/components/app/NewGameModal';
 
 const TOURNAMENT = {
     id: 't1',
@@ -58,7 +60,8 @@ const totals = PLAYERS.map(p => ({
 
 const TournamentDetailPage = () => {
     const navigate = useNavigate();
-    const { leagueId } = useParams();
+    const { leagueId, tournamentId } = useParams();
+    const [newGameOpen, setNewGameOpen] = useState(false);
 
     return (
         <main>
@@ -79,12 +82,19 @@ const TournamentDetailPage = () => {
                     </p>
                 </div>
                 <Button
-                    disabled
+                    onClick={() => setNewGameOpen(true)}
                     className="h-10 text-xs font-black uppercase tracking-[0.2em]"
                 >
                     Nová hra
                 </Button>
             </header>
+
+            <NewGameModal
+                open={newGameOpen}
+                onClose={() => setNewGameOpen(false)}
+                leagueId={leagueId ?? ''}
+                tournamentId={tournamentId ?? ''}
+            />
 
             <section className="px-5 pt-6 pb-4">
                 <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground mb-3">
