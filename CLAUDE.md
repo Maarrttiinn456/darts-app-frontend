@@ -39,7 +39,8 @@ src/
 ├── components/
 │   ├── ui/                # shadcn komponenty (negeneruj ručně, používej CLI)
 │   └── app/               # vlastní komponenty aplikace
-├── hooks/                 # custom hooks + React Query hooks
+├── hooks/                 # obecné UI hooky (debounce, formuláře, lokální stav)
+├── queries/               # React Query hooky per doménu (queries i mutations)
 ├── api/                   # fetch funkce per doména (auth, leagues, tournaments, games)
 ├── lib/
 │   ├── api.ts             # axios instance, base URL, auth header

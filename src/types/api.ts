@@ -28,6 +28,8 @@ export interface paths {
                         /** Format: email */
                         email: string;
                         password: string;
+                        avatarUrl?: string;
+                        color?: string;
                     };
                 };
             };
