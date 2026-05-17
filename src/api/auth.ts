@@ -3,7 +3,7 @@ import type { components, paths } from '@/types/api';
 
 type RegisterBody = paths['/api/auth/register']['post']['requestBody']['content']['application/json'];
 type LoginBody = paths['/api/auth/login']['post']['requestBody']['content']['application/json'];
-type AuthResponse = { token?: string; user?: components['schemas']['User'] };
+type AuthResponse = { accessToken?: string; user?: components['schemas']['User'] };
 
 export const register = async (body: RegisterBody): Promise<AuthResponse> => {
     const res = await api.post<AuthResponse>('/api/auth/register', body);

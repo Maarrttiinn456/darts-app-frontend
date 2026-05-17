@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { BrowserRouter } from 'react-router';
 import './index.css';
 import App from './App.tsx';
+import { AuthProvider } from '@/contexts/AuthContext';
 
 const queryClient = new QueryClient();
 
@@ -12,8 +13,10 @@ createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <BrowserRouter>
             <QueryClientProvider client={queryClient}>
-                <App />
-                <ReactQueryDevtools initialIsOpen={false} />
+                <AuthProvider>
+                    <App />
+                    <ReactQueryDevtools initialIsOpen={false} />
+                </AuthProvider>
             </QueryClientProvider>
         </BrowserRouter>
     </StrictMode>,

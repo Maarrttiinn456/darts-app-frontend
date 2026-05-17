@@ -2,6 +2,8 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 import { getServerErrorMessage } from '@/lib/errors';
 import { login } from '@/api/auth';
+import { setAccessToken } from '@/lib/api';
+import { useAuth } from '@/contexts/AuthContext';
 import type { paths } from '@/types/api';
 
 type LoginBody =
@@ -9,10 +11,15 @@ type LoginBody =
 
 export const useLogin = () => {
     const navigate = useNavigate();
+    const { setUser } = useAuth();
 
     const { mutate, isPending, error } = useMutation({
         mutationFn: (data: LoginBody) => login(data),
-        onSuccess: () => navigate('/leagues'),
+        onSuccess: (data) => {
+            if (data.accessToken) setAccessToken(data.accessToken);
+            if (data.user) setUser(data.user);
+            navigate('/leagues');
+        },
     });
 
     const serverError = getServerErrorMessage(error);
