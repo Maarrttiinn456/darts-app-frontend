@@ -4,25 +4,15 @@ import { ArrowLeft, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import type { components } from '@/types/api';
-
-type LeagueMember = components['schemas']['LeagueMember'];
-
-const SAMPLE_PLAYERS: LeagueMember[] = [
-    { id: '1', username: 'Jarda', color: '#e8a020' },
-    { id: '2', username: 'Pepa', color: '#4a9e6b' },
-    { id: '3', username: 'Honza', color: '#5b8dd9' },
-    { id: '4', username: 'Míša', color: '#c75b5b' },
-    { id: '5', username: 'Tomáš', color: '#8b6bd9' },
-    { id: '6', username: 'Radek', color: '#d97a3a' },
-    { id: '7', username: 'Karel', color: '#d9c03a' },
-    { id: '8', username: 'Marek', color: '#3ab8d9' },
-];
+import { useUsers } from '@/queries/useUsers';
+import { useCreateLeague } from '@/queries/useLeagues';
 
 const CreateLeaguePage = () => {
     const navigate = useNavigate();
     const [name, setName] = useState('');
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+    const { data: users = [], isLoading } = useUsers();
+    const { mutate: createLeague, isPending } = useCreateLeague();
 
     const togglePlayer = (id: string) => {
         setSelectedIds((prev) => {
@@ -37,6 +27,13 @@ const CreateLeaguePage = () => {
     };
 
     const canSubmit = name.trim().length > 0 && selectedIds.size > 0;
+
+    const handleSubmit = () => {
+        createLeague(
+            { name, memberIds: Array.from(selectedIds) },
+            { onSuccess: () => navigate('/leagues') },
+        );
+    };
 
     return (
         <main className="flex flex-col min-h-screen">
@@ -85,7 +82,10 @@ const CreateLeaguePage = () => {
                     </div>
 
                     <div className="border border-border divide-y divide-border">
-                        {SAMPLE_PLAYERS.map((player) => {
+                        {isLoading && (
+                            <p className="px-4 py-3.5 text-sm text-muted-foreground">Načítání hráčů…</p>
+                        )}
+                        {users.map((player) => {
                             const isSelected = selectedIds.has(player.id!);
                             return (
                                 <button
@@ -125,8 +125,8 @@ const CreateLeaguePage = () => {
                 <div className="max-w-sm mx-auto">
                     <Button
                         className="w-full h-12 text-xs font-black uppercase tracking-[0.2em]"
-                        disabled={!canSubmit}
-                        onClick={() => navigate('/leagues')}
+                        disabled={!canSubmit || isPending}
+                        onClick={handleSubmit}
                     >
                         Vytvořit ligu
                     </Button>

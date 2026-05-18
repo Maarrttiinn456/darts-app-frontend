@@ -2,18 +2,15 @@ import { ChevronRight } from 'lucide-react';
 import type { components } from '@/types/api';
 import { formatDate } from '@/lib/utils';
 
-type League = components['schemas']['League'];
-type LeagueMember = components['schemas']['LeagueMember'];
-
-export type LeagueWithMembers = League & { members?: LeagueMember[] };
+type LeagueWithCount = components['schemas']['LeagueWithCount'];
 
 interface LeagueCardProps {
-    league: LeagueWithMembers;
+    league: LeagueWithCount;
     onClick?: () => void;
 }
 
 const LeagueCard = ({ league, onClick }: LeagueCardProps) => {
-    const memberCount = league.members?.length ?? 0;
+    const memberCount = league.memberCount ?? 0;
     const date = formatDate(league.createdAt);
 
     return (

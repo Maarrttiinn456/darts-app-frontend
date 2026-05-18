@@ -272,7 +272,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["League"][];
+                        "application/json": components["schemas"]["LeagueWithCount"][];
                     };
                 };
             };
@@ -769,6 +769,51 @@ export interface paths {
         };
         trace?: never;
     };
+    "/api/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all users */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["User"][];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Error"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/leagues/{leagueId}": {
         parameters: {
             query?: never;
@@ -841,6 +886,9 @@ export interface components {
             adminId?: string;
             /** Format: date-time */
             createdAt?: string;
+        };
+        LeagueWithCount: components["schemas"]["League"] & {
+            memberCount?: number;
         };
         LeagueMember: {
             /** Format: uuid */

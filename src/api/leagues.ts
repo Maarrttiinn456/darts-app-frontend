@@ -4,8 +4,8 @@ import type { components, paths } from '@/types/api';
 type CreateLeagueBody = paths['/api/leagues']['post']['requestBody']['content']['application/json'];
 type LeagueDetail = components['schemas']['League'] & { members?: components['schemas']['LeagueMember'][] };
 
-export const getLeagues = async (): Promise<components['schemas']['League'][]> => {
-    const res = await api.get<components['schemas']['League'][]>('/api/leagues');
+export const getLeagues = async (): Promise<components['schemas']['LeagueWithCount'][]> => {
+    const res = await api.get<components['schemas']['LeagueWithCount'][]>('/api/leagues');
     return res.data;
 };
 
