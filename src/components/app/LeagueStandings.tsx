@@ -6,9 +6,9 @@ export type StandingRow = {
 };
 
 type Member = {
-    id: string;
-    username: string;
-    color?: string;
+    id?: string;
+    username?: string;
+    color?: string | null;
 };
 
 interface LeagueStandingsProps {
@@ -17,7 +17,9 @@ interface LeagueStandingsProps {
 }
 
 const LeagueStandings = ({ standings, members }: LeagueStandingsProps) => {
-    const memberMap = Object.fromEntries(members.map(m => [m.id, m]));
+    const memberMap = Object.fromEntries(members.map((m) => [m.id, m]));
+
+    console.log('members', members);
 
     return (
         <section>
@@ -28,7 +30,9 @@ const LeagueStandings = ({ standings, members }: LeagueStandingsProps) => {
                     return (
                         <div key={s.userId} className="px-5 py-4">
                             <div className="flex items-center gap-3">
-                                <span className={`w-8 shrink-0 text-2xl font-black tabular-nums ${isLeader ? 'text-primary' : 'text-muted-foreground'}`}>
+                                <span
+                                    className={`w-8 shrink-0 text-2xl font-black tabular-nums ${isLeader ? 'text-primary' : 'text-muted-foreground'}`}
+                                >
                                     {i + 1}
                                 </span>
                                 <span
@@ -38,14 +42,20 @@ const LeagueStandings = ({ standings, members }: LeagueStandingsProps) => {
                                 <span className="flex-1 text-base font-black uppercase tracking-wider text-foreground truncate">
                                     {member?.username}
                                 </span>
-                                <span className={`text-2xl font-black tabular-nums ${isLeader ? 'text-primary' : 'text-foreground'}`}>
+                                <span
+                                    className={`text-2xl font-black tabular-nums ${isLeader ? 'text-primary' : 'text-foreground'}`}
+                                >
                                     {s.points.toLocaleString('cs-CZ')}
                                 </span>
                             </div>
                             <p className="mt-1.5 pl-11 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-                                <span className="text-foreground font-black">{s.wins}</span>
+                                <span className="text-foreground font-black">
+                                    {s.wins}
+                                </span>
                                 {' výher · '}
-                                <span className="text-foreground font-black">{s.winPct}%</span>
+                                <span className="text-foreground font-black">
+                                    {s.winPct}%
+                                </span>
                                 {' úspěšnost'}
                             </p>
                         </div>

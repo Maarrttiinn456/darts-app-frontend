@@ -626,7 +626,13 @@ export interface paths {
                 };
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        winnerIds?: string[];
+                    };
+                };
+            };
             responses: {
                 /** @description OK */
                 200: {
@@ -841,6 +847,7 @@ export interface paths {
                     content: {
                         "application/json": components["schemas"]["League"] & {
                             members?: components["schemas"]["LeagueMember"][];
+                            scores?: components["schemas"]["LeagueScore"][];
                         };
                     };
                 };
@@ -915,8 +922,25 @@ export interface components {
             tournamentId?: string;
             mode?: string;
             isFinished?: boolean;
+            winnerIds?: string[] | null;
             /** Format: date-time */
             createdAt?: string;
+        };
+        LeagueScore: {
+            /** Format: uuid */
+            id?: string;
+            /** Format: uuid */
+            gameId?: string;
+            /** Format: uuid */
+            userId?: string;
+            points?: number;
+            /** Format: date-time */
+            updatedAt?: string;
+            gameMode?: string;
+            gameIsFinished?: boolean;
+            gameWinnerIds?: string[] | null;
+            /** Format: uuid */
+            tournamentId?: string;
         };
         GameScore: {
             /** Format: uuid */
