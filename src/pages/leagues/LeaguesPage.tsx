@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router';
 import { Button } from '@/components/ui/button';
 import LeagueCard from '@/components/app/LeagueCard';
-import { useLeagues } from '@/queries/useLeagues';
+import { useGetLeagues } from '@/api/generated/leagues/leagues';
 
 const LeaguesPage = () => {
     const navigate = useNavigate();
-    const { data: leagues, isLoading, isError } = useLeagues();
+    const { data: leagues, isLoading, isError } = useGetLeagues();
 
     return (
         <main>

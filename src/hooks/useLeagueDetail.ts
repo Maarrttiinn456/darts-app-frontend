@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
-import { useLeague } from '@/queries/useLeagues';
-import { useTournaments } from '@/queries/useTournaments';
+import { useGetLeague } from '@/api/generated/leagues/leagues';
+import { useGetLeagueTournaments } from '@/api/generated/tournaments/tournaments';
 
 export const useLeagueDetail = (leagueId: string) => {
-    const { data: league, ...leagueQuery } = useLeague(leagueId);
-    const { data: tournaments = [], ...tournamentsQuery } = useTournaments(leagueId);
+    const { data: league, ...leagueQuery } = useGetLeague(leagueId);
+    const { data: tournaments = [], ...tournamentsQuery } = useGetLeagueTournaments(leagueId);
 
     const members = league?.members ?? [];
 

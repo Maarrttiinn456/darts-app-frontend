@@ -1,8 +1,6 @@
 import { ChevronRight } from 'lucide-react';
-import type { components } from '@/types/api';
+import type { LeagueWithCount } from '@/api/generated/dartsAppAPI.schemas';
 import { formatDate } from '@/lib/utils';
-
-type LeagueWithCount = components['schemas']['LeagueWithCount'];
 
 interface LeagueCardProps {
     league: LeagueWithCount;

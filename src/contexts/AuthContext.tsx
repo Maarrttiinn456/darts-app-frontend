@@ -1,9 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import type { components } from '@/types/api';
-import { getMe } from '@/api/auth';
+import type { User } from '@/api/generated/dartsAppAPI.schemas';
+import { getMe } from '@/api/generated/auth/auth';
 import { setAccessToken } from '@/lib/api';
-
-type User = components['schemas']['User'];
 
 interface AuthContextValue {
     user: User | null;

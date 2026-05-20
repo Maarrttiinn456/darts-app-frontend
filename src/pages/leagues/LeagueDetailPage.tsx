@@ -19,7 +19,16 @@ const TABS: { id: Tab; label: string }[] = [
 const LeagueDetailPage = () => {
     const navigate = useNavigate();
     const { leagueId } = useParams();
-    const { league, members, standings, tournaments } = useLeagueDetail(leagueId!);
+    const { league, members, standings, tournaments } = useLeagueDetail(
+        leagueId!,
+    );
+
+    console.log('LeagueDetailPage render', {
+        league,
+        members,
+        standings,
+        tournaments,
+    });
 
     const [modalOpen, setModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState<Tab>('tabulka');

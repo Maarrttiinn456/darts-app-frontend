@@ -4,14 +4,16 @@ import { ArrowLeft, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useUsers } from '@/queries/useUsers';
-import { useCreateLeague } from '@/queries/useLeagues';
+import { useQueryClient } from '@tanstack/react-query';
+import { useGetUsers } from '@/api/generated/users/users';
+import { useCreateLeague, getGetLeaguesQueryKey } from '@/api/generated/leagues/leagues';
 
 const CreateLeaguePage = () => {
     const navigate = useNavigate();
     const [name, setName] = useState('');
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-    const { data: users = [], isLoading } = useUsers();
+    const queryClient = useQueryClient();
+    const { data: users = [], isLoading } = useGetUsers();
     const { mutate: createLeague, isPending } = useCreateLeague();
 
     const togglePlayer = (id: string) => {
@@ -30,8 +32,13 @@ const CreateLeaguePage = () => {
 
     const handleSubmit = () => {
         createLeague(
-            { name, memberIds: Array.from(selectedIds) },
-            { onSuccess: () => navigate('/leagues') },
+            { data: { name, memberIds: Array.from(selectedIds) } },
+            {
+                onSuccess: () => {
+                    queryClient.invalidateQueries({ queryKey: getGetLeaguesQueryKey() });
+                    navigate('/leagues');
+                },
+            },
         );
     };
 

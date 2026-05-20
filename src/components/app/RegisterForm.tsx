@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { AVATARS, PLAYER_COLORS, type AvatarId } from '@/constants/player';
-import { useRegister } from '@/queries/useRegister';
+import { useRegister } from '@/hooks/useRegister';
 
 const schema = z.object({
     username: z.string().min(2, 'Uživatelské jméno musí mít alespoň 2 znaky.'),

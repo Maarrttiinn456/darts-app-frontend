@@ -64,8 +64,8 @@ const LeagueStatsChart = ({ data, members }: LeagueStatsChartProps) => (
                             color: 'oklch(0.52 0.008 75)',
                         }}
                         itemStyle={{ padding: '1px 0' }}
-                        formatter={(value: number, _key: string, entry) => [
-                            value.toLocaleString('cs-CZ'),
+                        formatter={(value, _key, entry) => [
+                            Number(value).toLocaleString('cs-CZ'),
                             entry.name,
                         ]}
                     />

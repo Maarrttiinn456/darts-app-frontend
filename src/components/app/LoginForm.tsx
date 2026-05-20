@@ -5,7 +5,7 @@ import * as z from 'zod';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { useLogin } from '@/queries/useLogin';
+import { useLogin } from '@/hooks/useLogin';
 
 const schema = z.object({
     email: z.email('Zadej platnou e-mailovou adresu.'),
