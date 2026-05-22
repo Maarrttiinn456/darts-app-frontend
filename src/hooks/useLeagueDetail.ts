@@ -4,21 +4,30 @@ import { useGetLeagueTournaments } from '@/api/generated/tournaments/tournaments
 
 export const useLeagueDetail = (leagueId: string) => {
     const { data: league, ...leagueQuery } = useGetLeague(leagueId);
-    const { data: tournaments = [], ...tournamentsQuery } = useGetLeagueTournaments(leagueId);
+    const { data: tournaments = [], ...tournamentsQuery } =
+        useGetLeagueTournaments(leagueId);
 
     const members = league?.members ?? [];
 
     const standings = useMemo(() => {
         const scores = league?.scores ?? [];
-        const map = new Map<string, { points: number; wins: number; total: number }>();
+        const map = new Map<
+            string,
+            { points: number; wins: number; total: number }
+        >();
 
         for (const score of scores) {
             if (!score.userId) continue;
-            const entry = map.get(score.userId) ?? { points: 0, wins: 0, total: 0 };
+            const entry = map.get(score.userId) ?? {
+                points: 0,
+                wins: 0,
+                total: 0,
+            };
             entry.points += score.points ?? 0;
             if (score.gameIsFinished) {
                 entry.total += 1;
-                if (score.gameWinnerIds?.includes(score.userId)) entry.wins += 1;
+                if (score.gameWinnerIds?.includes(score.userId))
+                    entry.wins += 1;
             }
             map.set(score.userId, entry);
         }

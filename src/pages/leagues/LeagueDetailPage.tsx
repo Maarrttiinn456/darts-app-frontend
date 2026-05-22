@@ -23,13 +23,6 @@ const LeagueDetailPage = () => {
         leagueId!,
     );
 
-    console.log('LeagueDetailPage render', {
-        league,
-        members,
-        standings,
-        tournaments,
-    });
-
     const [modalOpen, setModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState<Tab>('tabulka');
 
@@ -71,6 +64,7 @@ const LeagueDetailPage = () => {
             <CreateTournamentModal
                 open={modalOpen}
                 onClose={() => setModalOpen(false)}
+                leagueId={leagueId!}
             />
 
             {activeTab === 'tabulka' && (

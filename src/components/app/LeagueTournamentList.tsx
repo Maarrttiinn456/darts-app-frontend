@@ -6,27 +6,25 @@ export type TournamentSummary = {
     name?: string;
     date?: string | null;
     games?: number;
-    winnerId?: string;
-};
-
-type Member = {
-    id?: string;
-    username?: string;
+    winners?: { id?: string; username?: string }[] | null;
 };
 
 interface LeagueTournamentListProps {
     tournaments: TournamentSummary[];
-    members: Member[];
+    members?: unknown[];
     onTournamentClick: (tournamentId: string) => void;
 }
 
-const LeagueTournamentList = ({ tournaments, members, onTournamentClick }: LeagueTournamentListProps) => {
-    const memberMap = Object.fromEntries(members.map(m => [m.id, m]));
-
+const LeagueTournamentList = ({
+    tournaments,
+    onTournamentClick,
+}: LeagueTournamentListProps) => {
     if (tournaments.length === 0) {
         return (
             <section className="px-5 py-12 text-center">
-                <p className="text-sm text-muted-foreground">Zatím žádné turnaje</p>
+                <p className="text-sm text-muted-foreground">
+                    Zatím žádné turnaje
+                </p>
             </section>
         );
     }
@@ -34,14 +32,18 @@ const LeagueTournamentList = ({ tournaments, members, onTournamentClick }: Leagu
     return (
         <section>
             <div className="divide-y divide-border">
-                {tournaments.map(t => {
+                {tournaments.map((t) => {
                     return (
                         <article
                             key={t.id}
                             role="button"
                             tabIndex={0}
                             onClick={() => t.id && onTournamentClick(t.id)}
-                            onKeyDown={e => e.key === 'Enter' && t.id && onTournamentClick(t.id)}
+                            onKeyDown={(e) =>
+                                e.key === 'Enter' &&
+                                t.id &&
+                                onTournamentClick(t.id)
+                            }
                             className="px-5 py-4 flex items-center gap-4 hover:bg-secondary transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                             aria-label={`Turnaj ${t.name}`}
                         >
@@ -52,18 +54,27 @@ const LeagueTournamentList = ({ tournaments, members, onTournamentClick }: Leagu
                                 <p className="mt-0.5 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
                                     {t.date ? formatDate(t.date) : '—'}
                                 </p>
-                                {(t.games !== undefined || t.winnerId) && (
+                                {(t.games !== undefined ||
+                                    (t.winners && t.winners.length > 0)) && (
                                     <p className="mt-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
                                         {t.games !== undefined && (
                                             <>
-                                                <span className="text-foreground font-black">{t.games}</span>
+                                                <span className="text-foreground font-black">
+                                                    {t.games}
+                                                </span>
                                                 {' her · '}
                                             </>
                                         )}
-                                        {'vítěz: '}
-                                        <span className="text-foreground font-black">
-                                            {t.winnerId ? memberMap[t.winnerId]?.username : '—'}
-                                        </span>
+                                        {t.winners && t.winners.length > 0 && (
+                                            <>
+                                                {'vítěz: '}
+                                                <span className="text-foreground font-black">
+                                                    {t.winners
+                                                        .map((w) => w.username)
+                                                        .join(', ')}
+                                                </span>
+                                            </>
+                                        )}
                                     </p>
                                 )}
                             </div>

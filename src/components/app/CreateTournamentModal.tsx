@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import {
     Dialog,
     DialogContent,
@@ -9,21 +10,48 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-
-const formatTournamentName = (date: Date) =>
-    `Turnaj ${date.getDate()}. ${date.getMonth() + 1}. ${date.getFullYear()}`;
+import {
+    useCreateTournament,
+    getGetLeagueTournamentsQueryKey,
+} from '@/api/generated/tournaments/tournaments';
+import { formatTournamentName } from '@/lib/utils';
 
 type Props = {
     open: boolean;
     onClose: () => void;
+    leagueId: string;
 };
 
-const CreateTournamentModal = ({ open, onClose }: Props) => {
+const CreateTournamentModal = ({ open, onClose, leagueId }: Props) => {
     const [name, setName] = useState(() => formatTournamentName(new Date()));
     const canSubmit = name.trim().length > 0;
 
+    const queryClient = useQueryClient();
+    const { mutate, isPending } = useCreateTournament({
+        mutation: {
+            onSuccess: () => {
+                queryClient.invalidateQueries({
+                    queryKey: getGetLeagueTournamentsQueryKey(leagueId),
+                });
+                onClose();
+            },
+        },
+    });
+
+    const handleSubmit = () => {
+        mutate({
+            leagueId,
+            data: { name, date: new Date().toISOString().slice(0, 10) },
+        });
+    };
+
     return (
-        <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) onClose(); }}>
+        <Dialog
+            open={open}
+            onOpenChange={(isOpen) => {
+                if (!isOpen) onClose();
+            }}
+        >
             <DialogContent
                 className="rounded-none border-border"
                 showCloseButton={false}
@@ -54,14 +82,16 @@ const CreateTournamentModal = ({ open, onClose }: Props) => {
                         variant="ghost"
                         className="h-10 text-xs font-black uppercase tracking-[0.2em] text-muted-foreground"
                         onClick={onClose}
+                        disabled={isPending}
                     >
                         Zrušit
                     </Button>
                     <Button
                         className="h-10 text-xs font-black uppercase tracking-[0.2em]"
-                        disabled={!canSubmit}
+                        disabled={!canSubmit || isPending}
+                        onClick={handleSubmit}
                     >
-                        Vytvořit turnaj
+                        {isPending ? 'Vytváření…' : 'Vytvořit turnaj'}
                     </Button>
                 </DialogFooter>
             </DialogContent>

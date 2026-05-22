@@ -43,6 +43,9 @@ export interface Tournament {
   name?: string;
   /** @nullable */
   date?: string | null;
+  /** @nullable */
+  winnerIds?: string[] | null;
+  winners?: LeagueMember[];
   createdAt?: string;
 }
 
