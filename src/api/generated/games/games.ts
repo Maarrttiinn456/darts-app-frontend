@@ -283,6 +283,67 @@ export function useGetGame<TData = Awaited<ReturnType<typeof getGame>>, TError =
 
 
 /**
+ * @summary Delete a game and its scores
+ */
+export const deleteGame = (
+    gameId: string,
+ ) => {
+      
+      
+      return orvalMutator<void>(
+      {url: `/api/games/${gameId}`, method: 'DELETE'
+    },
+      );
+    }
+  
+
+
+export const getDeleteGameMutationOptions = <TError = Error | Error,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteGame>>, TError,{gameId: string}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof deleteGame>>, TError,{gameId: string}, TContext> => {
+
+const mutationKey = ['deleteGame'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteGame>>, {gameId: string}> = (props) => {
+          const {gameId} = props ?? {};
+
+          return  deleteGame(gameId,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteGameMutationResult = NonNullable<Awaited<ReturnType<typeof deleteGame>>>
+    
+    export type DeleteGameMutationError = Error | Error
+
+    /**
+ * @summary Delete a game and its scores
+ */
+export const useDeleteGame = <TError = Error | Error,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteGame>>, TError,{gameId: string}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteGame>>,
+        TError,
+        {gameId: string},
+        TContext
+      > => {
+
+      const mutationOptions = getDeleteGameMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
  * @summary Finish a game
  */
 export const finishGame = (

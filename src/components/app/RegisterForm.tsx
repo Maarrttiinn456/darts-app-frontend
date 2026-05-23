@@ -6,21 +6,19 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import { AVATARS, PLAYER_COLORS, type AvatarId } from '@/constants/player';
+import { PLAYER_COLORS } from '@/constants/player';
 import { useRegister } from '@/hooks/useRegister';
 
 const schema = z.object({
     username: z.string().min(2, 'Uživatelské jméno musí mít alespoň 2 znaky.'),
     email: z.email('Zadej platnou e-mailovou adresu.'),
     password: z.string().min(6, 'Heslo musí mít alespoň 6 znaků.'),
-    avatarUrl: z.string().optional(),
     color: z.string().optional(),
 });
 
 type Schema = z.infer<typeof schema>;
 
 const RegisterForm = () => {
-    const [selectedAvatar, setSelectedAvatar] = useState<AvatarId>('Target');
     const [selectedColor, setSelectedColor] = useState<string>('#d97706');
 
     const {
@@ -31,7 +29,6 @@ const RegisterForm = () => {
     } = useForm({
         resolver: zodResolver(schema),
         defaultValues: {
-            avatarUrl: 'Target',
             color: '#d97706',
         },
     });
@@ -110,34 +107,6 @@ const RegisterForm = () => {
                         {errors.password.message}
                     </p>
                 )}
-            </div>
-
-            <div className="flex flex-col gap-2.5">
-                <span className="text-muted-foreground text-[10px] uppercase tracking-[0.14em]">
-                    Avatar
-                </span>
-                <div className="grid grid-cols-4 gap-2">
-                    {AVATARS.map(({ id, Icon }) => (
-                        <button
-                            key={id}
-                            type="button"
-                            onClick={() => {
-                                setSelectedAvatar(id);
-                                setValue('avatarUrl', id);
-                            }}
-                            className={cn(
-                                'h-12 flex items-center justify-center border transition-colors duration-150',
-                                selectedAvatar === id
-                                    ? 'border-primary bg-primary/10 text-primary'
-                                    : 'border-border bg-input text-muted-foreground hover:border-primary/40 hover:text-foreground',
-                            )}
-                            aria-label={id}
-                            aria-pressed={selectedAvatar === id}
-                        >
-                            <Icon size={18} strokeWidth={1.75} />
-                        </button>
-                    ))}
-                </div>
             </div>
 
             <div className="flex flex-col gap-2.5">

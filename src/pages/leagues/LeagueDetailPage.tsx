@@ -1,11 +1,15 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
+import { useQueryClient } from '@tanstack/react-query';
 import { useLeagueDetail } from '@/hooks/useLeagueDetail';
+import { useAuth } from '@/contexts/AuthContext';
+import { useDeleteTournament, getGetLeagueTournamentsQueryKey } from '@/api/generated/tournaments/tournaments';
 import { Button } from '@/components/ui/button';
 import PageHeader from '@/components/app/PageHeader';
 import CreateTournamentModal from '@/components/app/CreateTournamentModal';
+import ConfirmDeleteDialog from '@/components/app/ConfirmDeleteDialog';
 import LeagueStandings from '@/components/app/LeagueStandings';
-import LeagueTournamentList from '@/components/app/LeagueTournamentList';
+import LeagueTournamentList, { type TournamentSummary } from '@/components/app/LeagueTournamentList';
 import LeagueStatsChart from '@/components/app/LeagueStatsChart';
 
 type Tab = 'tabulka' | 'turnaje' | 'statistiky';
@@ -19,12 +23,33 @@ const TABS: { id: Tab; label: string }[] = [
 const LeagueDetailPage = () => {
     const navigate = useNavigate();
     const { leagueId } = useParams();
-    const { league, members, standings, tournaments } = useLeagueDetail(
-        leagueId!,
-    );
+    const queryClient = useQueryClient();
+    const { user } = useAuth();
+    const { league, members, standings, tournaments, chartData } = useLeagueDetail(leagueId!);
+
+    const isAdmin = !!(user?.id && league?.adminId && league.adminId === user.id);
 
     const [modalOpen, setModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState<Tab>('tabulka');
+    const [deleteTournamentTarget, setDeleteTournamentTarget] = useState<TournamentSummary | null>(null);
+
+    const { mutate: deleteTournament, isPending: isDeleting } = useDeleteTournament({
+        mutation: {
+            onSuccess: () => {
+                queryClient.invalidateQueries({ queryKey: getGetLeagueTournamentsQueryKey(leagueId) });
+                setDeleteTournamentTarget(null);
+            },
+        },
+    });
+
+    const handleCloseModal = (tournamentId?: string) => {
+        setModalOpen(false);
+        if (tournamentId) {
+            navigate(`/leagues/${leagueId}/tournaments/${tournamentId}`);
+        } else {
+            navigate(`/leagues/${leagueId}`);
+        }
+    };
 
     return (
         <main>
@@ -33,12 +58,14 @@ const LeagueDetailPage = () => {
                     onBack={() => navigate('/leagues')}
                     title={league?.name ?? ''}
                     action={
-                        <Button
-                            className="h-10 text-xs font-black uppercase tracking-[0.2em]"
-                            onClick={() => setModalOpen(true)}
-                        >
-                            Přidat turnaj
-                        </Button>
+                        isAdmin ? (
+                            <Button
+                                className="h-10 text-xs font-black uppercase tracking-[0.2em]"
+                                onClick={() => setModalOpen(true)}
+                            >
+                                Přidat turnaj
+                            </Button>
+                        ) : undefined
                     }
                 />
 
@@ -63,7 +90,7 @@ const LeagueDetailPage = () => {
 
             <CreateTournamentModal
                 open={modalOpen}
-                onClose={() => setModalOpen(false)}
+                onClose={handleCloseModal}
                 leagueId={leagueId!}
             />
 
@@ -77,10 +104,24 @@ const LeagueDetailPage = () => {
                     onTournamentClick={(id) =>
                         navigate(`/leagues/${leagueId}/tournaments/${id}`)
                     }
+                    isAdmin={isAdmin}
+                    onDeleteTournament={(id) => {
+                        const t = tournaments.find((t) => t.id === id) ?? null;
+                        setDeleteTournamentTarget(t);
+                    }}
                 />
             )}
+
+            <ConfirmDeleteDialog
+                open={deleteTournamentTarget !== null}
+                onClose={() => setDeleteTournamentTarget(null)}
+                onConfirm={() => deleteTournamentTarget?.id && deleteTournament({ tournamentId: deleteTournamentTarget.id })}
+                title={`Smazat turnaj „${deleteTournamentTarget?.name}"?`}
+                description="Budou smazány i všechny hry v turnaji. Tato akce je nevratná."
+                isPending={isDeleting}
+            />
             {activeTab === 'statistiky' && (
-                <LeagueStatsChart data={[]} members={members} />
+                <LeagueStatsChart data={chartData} members={members} />
             )}
         </main>
     );

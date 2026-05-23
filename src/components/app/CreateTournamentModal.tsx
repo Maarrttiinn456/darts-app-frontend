@@ -18,7 +18,7 @@ import { formatTournamentName } from '@/lib/utils';
 
 type Props = {
     open: boolean;
-    onClose: () => void;
+    onClose: (tournamentId?: string) => void;
     leagueId: string;
 };
 
@@ -29,11 +29,14 @@ const CreateTournamentModal = ({ open, onClose, leagueId }: Props) => {
     const queryClient = useQueryClient();
     const { mutate, isPending } = useCreateTournament({
         mutation: {
-            onSuccess: () => {
+            onSuccess: (data) => {
                 queryClient.invalidateQueries({
                     queryKey: getGetLeagueTournamentsQueryKey(leagueId),
                 });
-                onClose();
+
+                const tournamentId = data.id;
+
+                onClose(tournamentId);
             },
         },
     });

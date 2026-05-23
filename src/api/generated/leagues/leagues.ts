@@ -192,6 +192,67 @@ export const useCreateLeague = <TError = Error,
       return useMutation(mutationOptions, queryClient);
     }
     /**
+ * @summary Delete a league and all its data
+ */
+export const deleteLeague = (
+    leagueId: string,
+ ) => {
+      
+      
+      return orvalMutator<void>(
+      {url: `/api/leagues/${leagueId}`, method: 'DELETE'
+    },
+      );
+    }
+  
+
+
+export const getDeleteLeagueMutationOptions = <TError = Error | Error,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteLeague>>, TError,{leagueId: string}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof deleteLeague>>, TError,{leagueId: string}, TContext> => {
+
+const mutationKey = ['deleteLeague'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteLeague>>, {leagueId: string}> = (props) => {
+          const {leagueId} = props ?? {};
+
+          return  deleteLeague(leagueId,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteLeagueMutationResult = NonNullable<Awaited<ReturnType<typeof deleteLeague>>>
+    
+    export type DeleteLeagueMutationError = Error | Error
+
+    /**
+ * @summary Delete a league and all its data
+ */
+export const useDeleteLeague = <TError = Error | Error,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteLeague>>, TError,{leagueId: string}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteLeague>>,
+        TError,
+        {leagueId: string},
+        TContext
+      > => {
+
+      const mutationOptions = getDeleteLeagueMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
  * @summary Get league detail with members
  */
 export const getLeague = (

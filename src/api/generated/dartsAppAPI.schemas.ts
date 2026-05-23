@@ -9,8 +9,6 @@ export interface User {
   username?: string;
   email?: string;
   /** @nullable */
-  avatarUrl?: string | null;
-  /** @nullable */
   color?: string | null;
   createdAt?: string;
 }
@@ -31,8 +29,6 @@ export type LeagueWithCount = League & LeagueWithCountAllOf;
 export interface LeagueMember {
   id?: string;
   username?: string;
-  /** @nullable */
-  avatarUrl?: string | null;
   /** @nullable */
   color?: string | null;
 }
@@ -78,7 +74,44 @@ export interface GameScore {
   userId?: string;
   points?: number;
   updatedAt?: string;
+  username?: string;
+  /** @nullable */
+  color?: string | null;
 }
+
+export type GameWithScoresAllOfScoresItem = {
+  userId?: string;
+  username?: string;
+  /** @nullable */
+  color?: string | null;
+  /** @nullable */
+  points?: number | null;
+};
+
+export type GameWithScoresAllOf = {
+  winners?: LeagueMember[];
+  scores?: GameWithScoresAllOfScoresItem[];
+};
+
+export type GameWithScores = Game & GameWithScoresAllOf;
+
+export type LeaderboardEntryPointsByMode = {[key: string]: number};
+
+export interface LeaderboardEntry {
+  userId?: string;
+  username?: string;
+  /** @nullable */
+  color?: string | null;
+  totalPoints?: number;
+  pointsByMode?: LeaderboardEntryPointsByMode;
+}
+
+export type TournamentDetailAllOf = {
+  games?: GameWithScores[];
+  leaderboard?: LeaderboardEntry[];
+};
+
+export type TournamentDetail = Tournament & TournamentDetailAllOf;
 
 export interface Error {
   error?: string;
@@ -90,7 +123,6 @@ export type RegisterUserBody = {
   email: string;
   /** @minLength 6 */
   password: string;
-  avatarUrl?: string;
   color?: string;
 };
 

@@ -1,13 +1,15 @@
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Trash2 } from 'lucide-react';
 import type { LeagueWithCount } from '@/api/generated/dartsAppAPI.schemas';
 import { formatDate } from '@/lib/utils';
 
 interface LeagueCardProps {
     league: LeagueWithCount;
     onClick?: () => void;
+    isAdmin?: boolean;
+    onDelete?: () => void;
 }
 
-const LeagueCard = ({ league, onClick }: LeagueCardProps) => {
+const LeagueCard = ({ league, onClick, isAdmin, onDelete }: LeagueCardProps) => {
     const memberCount = league.memberCount ?? 0;
     const date = formatDate(league.createdAt);
 
@@ -41,11 +43,23 @@ const LeagueCard = ({ league, onClick }: LeagueCardProps) => {
                 )}
             </div>
 
-            <ChevronRight
-                size={18}
-                className="text-muted-foreground shrink-0"
-                aria-hidden="true"
-            />
+            <div className="flex items-center gap-1 shrink-0">
+                {isAdmin && (
+                    <button
+                        onClick={(e) => { e.stopPropagation(); onDelete?.(); }}
+                        onKeyDown={(e) => { e.stopPropagation(); if (e.key === 'Enter') onDelete?.(); }}
+                        className="w-8 h-8 flex items-center justify-center text-destructive/50 hover:text-destructive transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                        aria-label="Smazat ligu"
+                    >
+                        <Trash2 size={16} />
+                    </button>
+                )}
+                <ChevronRight
+                    size={18}
+                    className="text-muted-foreground"
+                    aria-hidden="true"
+                />
+            </div>
         </article>
     );
 };

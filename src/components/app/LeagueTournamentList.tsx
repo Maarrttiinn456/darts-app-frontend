@@ -1,4 +1,4 @@
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Trash2 } from 'lucide-react';
 import { formatDate } from '@/lib/utils';
 
 export type TournamentSummary = {
@@ -13,11 +13,15 @@ interface LeagueTournamentListProps {
     tournaments: TournamentSummary[];
     members?: unknown[];
     onTournamentClick: (tournamentId: string) => void;
+    isAdmin?: boolean;
+    onDeleteTournament?: (tournamentId: string) => void;
 }
 
 const LeagueTournamentList = ({
     tournaments,
     onTournamentClick,
+    isAdmin,
+    onDeleteTournament,
 }: LeagueTournamentListProps) => {
     if (tournaments.length === 0) {
         return (
@@ -78,11 +82,23 @@ const LeagueTournamentList = ({
                                     </p>
                                 )}
                             </div>
-                            <ChevronRight
-                                size={18}
-                                className="text-muted-foreground shrink-0"
-                                aria-hidden="true"
-                            />
+                            <div className="flex items-center gap-1 shrink-0">
+                                {isAdmin && (
+                                    <button
+                                        onClick={(e) => { e.stopPropagation(); t.id && onDeleteTournament?.(t.id); }}
+                                        onKeyDown={(e) => { e.stopPropagation(); if (e.key === 'Enter') t.id && onDeleteTournament?.(t.id); }}
+                                        className="w-8 h-8 flex items-center justify-center text-destructive/50 hover:text-destructive transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                        aria-label="Smazat turnaj"
+                                    >
+                                        <Trash2 size={16} />
+                                    </button>
+                                )}
+                                <ChevronRight
+                                    size={18}
+                                    className="text-muted-foreground"
+                                    aria-hidden="true"
+                                />
+                            </div>
                         </article>
                     );
                 })}

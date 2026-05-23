@@ -26,7 +26,8 @@ import type {
 import type {
   CreateTournamentBody,
   Error,
-  Tournament
+  Tournament,
+  TournamentDetail
 } from '../dartsAppAPI.schemas';
 
 import { orvalMutator } from '../../../lib/orvalMutator';
@@ -191,7 +192,68 @@ export const useCreateTournament = <TError = Error | Error,
       return useMutation(mutationOptions, queryClient);
     }
     /**
- * @summary Get tournament detail
+ * @summary Delete a tournament and all its games
+ */
+export const deleteTournament = (
+    tournamentId: string,
+ ) => {
+      
+      
+      return orvalMutator<void>(
+      {url: `/api/tournaments/${tournamentId}`, method: 'DELETE'
+    },
+      );
+    }
+  
+
+
+export const getDeleteTournamentMutationOptions = <TError = Error | Error,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTournament>>, TError,{tournamentId: string}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof deleteTournament>>, TError,{tournamentId: string}, TContext> => {
+
+const mutationKey = ['deleteTournament'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteTournament>>, {tournamentId: string}> = (props) => {
+          const {tournamentId} = props ?? {};
+
+          return  deleteTournament(tournamentId,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteTournamentMutationResult = NonNullable<Awaited<ReturnType<typeof deleteTournament>>>
+    
+    export type DeleteTournamentMutationError = Error | Error
+
+    /**
+ * @summary Delete a tournament and all its games
+ */
+export const useDeleteTournament = <TError = Error | Error,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteTournament>>, TError,{tournamentId: string}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof deleteTournament>>,
+        TError,
+        {tournamentId: string},
+        TContext
+      > => {
+
+      const mutationOptions = getDeleteTournamentMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Get tournament
  */
 export const getTournament = (
     tournamentId: string,
@@ -262,7 +324,7 @@ export function useGetTournament<TData = Awaited<ReturnType<typeof getTournament
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Get tournament detail
+ * @summary Get tournament
  */
 
 export function useGetTournament<TData = Awaited<ReturnType<typeof getTournament>>, TError = Error>(
@@ -271,6 +333,97 @@ export function useGetTournament<TData = Awaited<ReturnType<typeof getTournament
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getGetTournamentQueryOptions(tournamentId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+/**
+ * @summary Get tournament detail with games and leaderboard
+ */
+export const getTournamentDetail = (
+    tournamentId: string,
+ signal?: AbortSignal
+) => {
+      
+      
+      return orvalMutator<TournamentDetail>(
+      {url: `/api/tournaments/${tournamentId}/detail`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetTournamentDetailQueryKey = (tournamentId?: string,) => {
+    return [
+    `/api/tournaments/${tournamentId}/detail`
+    ] as const;
+    }
+
+    
+export const getGetTournamentDetailQueryOptions = <TData = Awaited<ReturnType<typeof getTournamentDetail>>, TError = Error>(tournamentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTournamentDetail>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetTournamentDetailQueryKey(tournamentId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getTournamentDetail>>> = ({ signal }) => getTournamentDetail(tournamentId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(tournamentId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getTournamentDetail>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetTournamentDetailQueryResult = NonNullable<Awaited<ReturnType<typeof getTournamentDetail>>>
+export type GetTournamentDetailQueryError = Error
+
+
+export function useGetTournamentDetail<TData = Awaited<ReturnType<typeof getTournamentDetail>>, TError = Error>(
+ tournamentId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTournamentDetail>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTournamentDetail>>,
+          TError,
+          Awaited<ReturnType<typeof getTournamentDetail>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetTournamentDetail<TData = Awaited<ReturnType<typeof getTournamentDetail>>, TError = Error>(
+ tournamentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTournamentDetail>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getTournamentDetail>>,
+          TError,
+          Awaited<ReturnType<typeof getTournamentDetail>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetTournamentDetail<TData = Awaited<ReturnType<typeof getTournamentDetail>>, TError = Error>(
+ tournamentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTournamentDetail>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get tournament detail with games and leaderboard
+ */
+
+export function useGetTournamentDetail<TData = Awaited<ReturnType<typeof getTournamentDetail>>, TError = Error>(
+ tournamentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getTournamentDetail>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetTournamentDetailQueryOptions(tournamentId,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

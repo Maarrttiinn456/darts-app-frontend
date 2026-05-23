@@ -33,11 +33,14 @@ const LeagueStatsChart = ({ data, members }: LeagueStatsChartProps) => (
                         dataKey="tournament"
                         axisLine={{ stroke: 'oklch(0.25 0.008 50)' }}
                         tickLine={false}
+                        interval={0}
+                        height={60}
                         tick={{
                             fill: 'oklch(0.52 0.008 75)',
                             fontSize: 9,
                             fontWeight: 700,
-                            textAnchor: 'middle',
+                            textAnchor: 'end',
+                            angle: -40,
                         }}
                     />
                     <YAxis
