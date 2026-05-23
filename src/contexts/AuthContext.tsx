@@ -1,9 +1,8 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import type { components } from '@/types/api';
-import { getMe } from '@/api/auth';
+import axios from 'axios';
+import type { User } from '@/api/generated/dartsAppAPI.schemas';
+import { getMe } from '@/api/generated/auth/auth';
 import { setAccessToken } from '@/lib/api';
-
-type User = components['schemas']['User'];
 
 interface AuthContextValue {
     user: User | null;
@@ -26,6 +25,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
+                const res = await axios.post<{ accessToken: string }>(
+                    `${import.meta.env.VITE_API_URL}/api/auth/refresh`,
+                    null,
+                    { withCredentials: true },
+                );
+                setAccessToken(res.data.accessToken);
                 const user = await getMe();
                 setUser(user);
             } catch {

@@ -8,9 +8,9 @@ import {
 } from 'recharts';
 
 type Member = {
-    id: string;
-    username: string;
-    color?: string;
+    id?: string;
+    username?: string;
+    color?: string | null;
 };
 
 // Each entry: { tournament: string } + one numeric key per member id
@@ -33,11 +33,14 @@ const LeagueStatsChart = ({ data, members }: LeagueStatsChartProps) => (
                         dataKey="tournament"
                         axisLine={{ stroke: 'oklch(0.25 0.008 50)' }}
                         tickLine={false}
+                        interval={0}
+                        height={60}
                         tick={{
                             fill: 'oklch(0.52 0.008 75)',
                             fontSize: 9,
                             fontWeight: 700,
-                            textAnchor: 'middle',
+                            textAnchor: 'end',
+                            angle: -40,
                         }}
                     />
                     <YAxis
@@ -64,8 +67,8 @@ const LeagueStatsChart = ({ data, members }: LeagueStatsChartProps) => (
                             color: 'oklch(0.52 0.008 75)',
                         }}
                         itemStyle={{ padding: '1px 0' }}
-                        formatter={(value: number, _key: string, entry) => [
-                            value.toLocaleString('cs-CZ'),
+                        formatter={(value, _key, entry) => [
+                            Number(value).toLocaleString('cs-CZ'),
                             entry.name,
                         ]}
                     />
@@ -75,7 +78,7 @@ const LeagueStatsChart = ({ data, members }: LeagueStatsChartProps) => (
                             type="monotone"
                             dataKey={m.id}
                             name={m.username}
-                            stroke={m.color}
+                            stroke={m.color ?? undefined}
                             strokeWidth={2}
                             dot={false}
                             activeDot={{ r: 4, strokeWidth: 0 }}
@@ -89,7 +92,7 @@ const LeagueStatsChart = ({ data, members }: LeagueStatsChartProps) => (
                     <div key={m.id} className="flex items-center gap-2">
                         <span
                             className="w-3 h-3 shrink-0"
-                            style={{ backgroundColor: m.color }}
+                            style={{ backgroundColor: m.color ?? undefined }}
                         />
                         <span className="text-[10px] font-black uppercase tracking-[0.12em] text-muted-foreground">
                             {m.username}

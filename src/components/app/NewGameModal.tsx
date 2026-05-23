@@ -5,12 +5,8 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-
-const MODES = [
-    { id: '301', description: 'Klasická hra na nulu' },
-    { id: '501', description: 'Delší hra, více šipek' },
-    { id: 'Cricket', description: 'Zavírej sektory, boduj' },
-] as const;
+import { GAME_TYPES } from '@/constants/gameModes';
+import { useCreateGame } from '@/api/generated/games/games';
 
 type Props = {
     open: boolean;
@@ -21,11 +17,17 @@ type Props = {
 
 const NewGameModal = ({ open, onClose, leagueId, tournamentId }: Props) => {
     const navigate = useNavigate();
+    const { mutate: createGame, isPending } = useCreateGame();
 
     const handleSelect = (mode: string) => {
-        onClose();
-        navigate(
-            `/leagues/${leagueId}/tournaments/${tournamentId}/games/preview?mode=${mode}`,
+        createGame(
+            { tournamentId, data: { mode } },
+            {
+                onSuccess: (game) => {
+                    onClose();
+                    navigate(`/leagues/${leagueId}/tournaments/${tournamentId}/games/${game.id}`);
+                },
+            },
         );
     };
 
@@ -41,18 +43,16 @@ const NewGameModal = ({ open, onClose, leagueId, tournamentId }: Props) => {
                     </p>
                 </DialogHeader>
 
-                <div className="flex flex-col">
-                    {MODES.map((mode, i) => (
+                <div className="flex flex-col overflow-y-auto max-h-[60vh]">
+                    {GAME_TYPES.map((mode, i) => (
                         <button
                             key={mode.id}
                             onClick={() => handleSelect(mode.id)}
-                            className={`w-full flex items-center justify-between px-5 py-5 hover:bg-primary/[0.06] active:bg-primary/10 transition-colors duration-150 text-left group ${i < MODES.length - 1 ? 'border-b border-border' : ''}`}
+                            disabled={isPending}
+                            className={`w-full flex items-center justify-between px-5 py-5 hover:bg-primary/[0.06] active:bg-primary/10 transition-colors duration-150 text-left group disabled:opacity-50 disabled:pointer-events-none ${i < GAME_TYPES.length - 1 ? 'border-b border-border' : ''}`}
                         >
-                            <span className="text-4xl font-black tabular-nums text-foreground group-hover:text-primary transition-colors duration-150 leading-none">
-                                {mode.id}
-                            </span>
-                            <span className="text-xs text-muted-foreground group-hover:text-foreground/70 transition-colors duration-150">
-                                {mode.description}
+                            <span className="text-xl font-black text-foreground group-hover:text-primary transition-colors duration-150 leading-none">
+                                {mode.label}
                             </span>
                         </button>
                     ))}

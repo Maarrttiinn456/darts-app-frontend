@@ -1,91 +1,92 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { useQueryClient } from '@tanstack/react-query';
+import { LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import LeagueCard, { type LeagueWithMembers } from '@/components/app/LeagueCard';
-
-const SAMPLE_LEAGUES: LeagueWithMembers[] = [
-    {
-        id: '1',
-        name: 'Liga u Kocoura',
-        adminId: 'u1',
-        createdAt: '2024-03-12T18:00:00Z',
-        members: [
-            { id: 'u1', username: 'Jarda', color: '#e8a020' },
-            { id: 'u2', username: 'Pepa', color: '#4a9e6b' },
-            { id: 'u3', username: 'Honza', color: '#5b8dd9' },
-            { id: 'u4', username: 'Míša', color: '#c75b5b' },
-            { id: 'u5', username: 'Tomáš', color: '#8b6bd9' },
-            { id: 'u6', username: 'Radek', color: '#d97a3a' },
-        ],
-    },
-    {
-        id: '2',
-        name: 'Podzimní série 2024',
-        adminId: 'u2',
-        createdAt: '2024-09-01T17:30:00Z',
-        members: [
-            { id: 'u2', username: 'Pepa', color: '#4a9e6b' },
-            { id: 'u7', username: 'Karel', color: '#d9c03a' },
-            { id: 'u8', username: 'Marek', color: '#3ab8d9' },
-            { id: 'u9', username: 'Lukáš', color: '#d94a8a' },
-        ],
-    },
-    {
-        id: '3',
-        name: 'Zimní pohár',
-        adminId: 'u3',
-        createdAt: '2024-11-20T20:00:00Z',
-        members: [
-            { id: 'u1', username: 'Jarda', color: '#e8a020' },
-            { id: 'u3', username: 'Honza', color: '#5b8dd9' },
-            { id: 'u5', username: 'Tomáš', color: '#8b6bd9' },
-            { id: 'u7', username: 'Karel', color: '#d9c03a' },
-            { id: 'u8', username: 'Marek', color: '#3ab8d9' },
-            { id: 'u9', username: 'Lukáš', color: '#d94a8a' },
-            { id: 'u10', username: 'Pavel', color: '#6bd9a4' },
-            { id: 'u11', username: 'Martin', color: '#d96b6b' },
-        ],
-    },
-    {
-        id: '4',
-        name: 'Přátelský turnaj',
-        adminId: 'u4',
-        createdAt: '2025-01-15T19:00:00Z',
-        members: [
-            { id: 'u4', username: 'Míša', color: '#c75b5b' },
-            { id: 'u6', username: 'Radek', color: '#d97a3a' },
-            { id: 'u10', username: 'Pavel', color: '#6bd9a4' },
-        ],
-    },
-];
+import LeagueCard from '@/components/app/LeagueCard';
+import ConfirmDeleteDialog from '@/components/app/ConfirmDeleteDialog';
+import { useGetLeagues, useDeleteLeague, getGetLeaguesQueryKey } from '@/api/generated/leagues/leagues';
+import { useAuth } from '@/contexts/AuthContext';
+import { logoutUser } from '@/api/generated/auth/auth';
+import type { LeagueWithCount } from '@/api/generated/dartsAppAPI.schemas';
 
 const LeaguesPage = () => {
     const navigate = useNavigate();
+    const { user, logout } = useAuth();
+    const queryClient = useQueryClient();
+    const { data: leagues, isLoading, isError } = useGetLeagues();
+    const [deleteTarget, setDeleteTarget] = useState<LeagueWithCount | null>(null);
+
+    const { mutate: deleteLeague, isPending: isDeleting } = useDeleteLeague({
+        mutation: {
+            onSuccess: () => {
+                queryClient.invalidateQueries({ queryKey: getGetLeaguesQueryKey() });
+                setDeleteTarget(null);
+            },
+        },
+    });
+
+    const handleLogout = async () => {
+        try { await logoutUser(); } catch { /* clear client state regardless */ }
+        logout();
+        navigate('/login');
+    };
 
     return (
         <main>
 
-            <header className="sticky top-0 z-10 bg-background border-b border-border px-5 py-4 flex items-center justify-between gap-4">
-                <h1 className="text-2xl font-black uppercase tracking-widest text-foreground">
-                    Ligy
-                </h1>
-                <Button
-                    className="h-10 text-xs font-black uppercase tracking-[0.2em]"
-                    onClick={() => navigate('/leagues/new')}
-                >
-                    Přidat ligu
-                </Button>
+            <header className="sticky top-0 z-10 bg-background border-b border-border px-5 py-4 flex items-center justify-between">
+                <div>
+                    <h1 className="text-2xl font-black uppercase tracking-widest text-foreground">
+                        Ligy
+                    </h1>
+                </div>
+                <div className="flex items-center gap-2">
+                    <Button
+                        className="h-10 text-xs font-black uppercase tracking-[0.2em]"
+                        onClick={() => navigate('/leagues/new')}
+                    >
+                        Přidat ligu
+                    </Button>
+                    <button
+                        onClick={handleLogout}
+                        className="w-10 h-10 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors duration-150 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring shrink-0"
+                        aria-label="Odhlásit se"
+                    >
+                        <LogOut size={18} />
+                    </button>
+                </div>
             </header>
 
             <section>
-                <div className="flex flex-col -space-y-px">
-                    {SAMPLE_LEAGUES.map((league) => (
-                        <LeagueCard
-                            key={league.id}
-                            league={league}
-                            onClick={() => navigate(`/leagues/${league.id}`)}
-                        />
-                    ))}
-                </div>
+                {isLoading && (
+                    <p className="px-5 py-8 text-sm text-muted-foreground">Načítám ligy...</p>
+                )}
+                {isError && (
+                    <p className="px-5 py-8 text-sm text-destructive">Nepodařilo se načíst ligy.</p>
+                )}
+                {leagues && (
+                    <div className="flex flex-col -space-y-px">
+                        {leagues.map((league) => (
+                            <LeagueCard
+                                key={league.id}
+                                league={league}
+                                onClick={() => navigate(`/leagues/${league.id}`)}
+                                isAdmin={!!(user?.id && league.adminId === user.id)}
+                                onDelete={() => setDeleteTarget(league)}
+                            />
+                        ))}
+                    </div>
+                )}
+
+                <ConfirmDeleteDialog
+                    open={deleteTarget !== null}
+                    onClose={() => setDeleteTarget(null)}
+                    onConfirm={() => deleteTarget?.id && deleteLeague({ leagueId: deleteTarget.id })}
+                    title={`Smazat ligu „${deleteTarget?.name}"?`}
+                    description="Budou smazány i všechny turnaje a hry. Tato akce je nevratná."
+                    isPending={isDeleting}
+                />
             </section>
 
         </main>
