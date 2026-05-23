@@ -12,10 +12,10 @@ export type GamePlayer = {
     wins: number;
 };
 
-export const useGame = (gameId: string, tournamentId: string) => {
+export const useGame = (gameId: string, tournamentId: string, leagueId: string) => {
     const { data: game, isLoading: gameLoading } = useGetGame(gameId);
     const { data: gameScores, isLoading: scoresLoading } = useGetGameScores(gameId);
-    const { leaderboard, games, isLoading: tournamentLoading } = useTournamentDetail(tournamentId);
+    const { leaderboard, games, isLoading: tournamentLoading } = useTournamentDetail(tournamentId, leagueId);
     const updateScore = useUpdateScore();
     const finishGame = useFinishGame();
     const deleteGame = useDeleteGame();
