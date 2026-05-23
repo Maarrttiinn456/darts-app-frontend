@@ -22,7 +22,7 @@ const GamePage = () => {
     const navigate = useNavigate();
     const { leagueId, tournamentId, gameId } = useParams();
 
-    const { mode, players, adjust, evaluate, cancel, isLoading } = useGame(gameId!, tournamentId!);
+    const { mode, players, adjust, evaluate, cancel, isLoading } = useGame(gameId!, tournamentId!, leagueId!);
     const [winner, setWinner] = useState<GamePlayer | null>(null);
     const confettiTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 

@@ -84,7 +84,7 @@ const CreateTournamentModal = ({ open, onClose, leagueId }: Props) => {
                     <Button
                         variant="ghost"
                         className="h-10 text-xs font-black uppercase tracking-[0.2em] text-muted-foreground"
-                        onClick={onClose}
+                        onClick={() => onClose()}
                         disabled={isPending}
                     >
                         Zrušit
